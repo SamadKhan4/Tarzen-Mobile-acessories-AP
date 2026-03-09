@@ -1,0 +1,148 @@
+import { useState, useEffect } from 'react';
+import Card from '../components/Card';
+import Pagination from '../components/Pagination';
+import { customerService } from '../services/customerService';
+
+const Customers = () => {
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // Mock data (replace with API call)
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        // const response = await customerService.getAllCustomers({ page: currentPage, limit: 10 });
+        
+        // Mock data for demonstration
+        const mockCustomers = [
+          {
+            _id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            phone: '9876543210',
+            totalOrders: 5,
+            joinedAt: '2026-01-15',
+          },
+          {
+            _id: '2',
+            name: 'Jane Smith',
+            email: 'jane@example.com',
+            phone: '9876543211',
+            totalOrders: 3,
+            joinedAt: '2026-01-20',
+          },
+          {
+            _id: '3',
+            name: 'Mike Johnson',
+            email: 'mike@example.com',
+            phone: '9876543212',
+            totalOrders: 8,
+            joinedAt: '2025-12-10',
+          },
+          {
+            _id: '4',
+            name: 'Sarah Williams',
+            email: 'sarah@example.com',
+            phone: '9876543213',
+            totalOrders: 2,
+            joinedAt: '2026-02-05',
+          },
+          {
+            _id: '5',
+            name: 'David Brown',
+            email: 'david@example.com',
+            phone: '9876543214',
+            totalOrders: 12,
+            joinedAt: '2025-11-20',
+          },
+        ];
+
+        setCustomers(mockCustomers);
+        setTotalPages(3);
+      } catch (error) {
+        console.error('Error fetching customers:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCustomers();
+  }, [currentPage]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Customers</h1>
+        <p className="text-gray-600 mt-1">Manage registered customers</p>
+      </div>
+
+      {/* Customers Table */}
+      <Card>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Phone
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total Orders
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Joined Date
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {customers.map((customer) => (
+                <tr key={customer._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{customer.name}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-700">{customer.email}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-700">{customer.phone}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{customer.totalOrders}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {new Date(customer.joinedAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      </Card>
+    </div>
+  );
+};
+
+export default Customers;
