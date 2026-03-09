@@ -1,5 +1,6 @@
 const Select = ({
   label,
+  name,
   value,
   onChange,
   options = [],
@@ -16,6 +17,7 @@ const Select = ({
         </label>
       )}
       <select
+        name={name || (label ? label.toLowerCase().replace(/\s+/g, '') : '')}
         value={value}
         onChange={onChange}
         className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${

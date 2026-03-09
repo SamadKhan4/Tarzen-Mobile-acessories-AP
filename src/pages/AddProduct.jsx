@@ -46,7 +46,12 @@ const AddProduct = () => {
   }, []);
 
   const handleChange = (e) => {
+    console.log('handleChange called for:', e.target.name, 'value:', e.target.value);
     setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+    console.log('Updated formData:', {
       ...formData,
       [e.target.name]: e.target.value,
     });
@@ -132,6 +137,23 @@ const AddProduct = () => {
               error={errors.name}
             />
 
+            {/* Test Input - Remove this after testing */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Test Input
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => {
+                  console.log('Test input changed:', e.target.value);
+                  setFormData({...formData, name: e.target.value});
+                }}
+                className="w-full px-4 py-2 border rounded-lg"
+                placeholder="Type here to test"
+              />
+            </div>
+
             <Input
               label="Brand"
               name="brand"
@@ -164,6 +186,7 @@ const AddProduct = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Select
               label="Category"
+              name="category"
               value={formData.category}
               onChange={handleChange}
               options={categories.map((cat) => ({

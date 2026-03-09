@@ -1,6 +1,7 @@
 const Input = ({
   label,
   type = 'text',
+  name,
   value,
   onChange,
   placeholder,
@@ -17,7 +18,7 @@ const Input = ({
       )}
       <input
         type={type}
-        name={label ? label.toLowerCase() : ''}
+        name={name || (label ? label.toLowerCase().replace(/\s+/g, '') : '')}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
