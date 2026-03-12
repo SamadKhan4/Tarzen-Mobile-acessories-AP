@@ -26,19 +26,11 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        // const response = await categoryService.getAllCategories();
-        // Mock data
-        const mockCategories = [
-          { _id: '1', name: 'Cases & Covers' },
-          { _id: '2', name: 'Smartphones' },
-          { _id: '3', name: 'Audio' },
-          { _id: '4', name: 'Chargers' },
-          { _id: '5', name: 'Screen Protectors' },
-          { _id: '6', name: 'Cables' },
-        ];
-        setCategories(mockCategories);
+        const response = await categoryService.getAllCategories();
+        setCategories(response.data || []);
       } catch (error) {
         console.error('Error fetching categories:', error);
+        setCategories([]);
       }
     };
 
@@ -136,23 +128,6 @@ const AddProduct = () => {
               required
               error={errors.name}
             />
-
-            {/* Test Input - Remove this after testing */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Test Input
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => {
-                  console.log('Test input changed:', e.target.value);
-                  setFormData({...formData, name: e.target.value});
-                }}
-                className="w-full px-4 py-2 border rounded-lg"
-                placeholder="Type here to test"
-              />
-            </div>
 
             <Input
               label="Brand"

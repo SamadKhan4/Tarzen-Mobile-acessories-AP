@@ -9,60 +9,19 @@ const Customers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Mock data (replace with API call)
+  // Fetch customers from API
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        // const response = await customerService.getAllCustomers({ page: currentPage, limit: 10 });
+        setLoading(true);
+        const response = await customerService.getAllCustomers({ page: currentPage, limit: 10 });
         
-        // Mock data for demonstration
-        const mockCustomers = [
-          {
-            _id: '1',
-            name: 'John Doe',
-            email: 'john@example.com',
-            phone: '9876543210',
-            totalOrders: 5,
-            joinedAt: '2026-01-15',
-          },
-          {
-            _id: '2',
-            name: 'Jane Smith',
-            email: 'jane@example.com',
-            phone: '9876543211',
-            totalOrders: 3,
-            joinedAt: '2026-01-20',
-          },
-          {
-            _id: '3',
-            name: 'Mike Johnson',
-            email: 'mike@example.com',
-            phone: '9876543212',
-            totalOrders: 8,
-            joinedAt: '2025-12-10',
-          },
-          {
-            _id: '4',
-            name: 'Sarah Williams',
-            email: 'sarah@example.com',
-            phone: '9876543213',
-            totalOrders: 2,
-            joinedAt: '2026-02-05',
-          },
-          {
-            _id: '5',
-            name: 'David Brown',
-            email: 'david@example.com',
-            phone: '9876543214',
-            totalOrders: 12,
-            joinedAt: '2025-11-20',
-          },
-        ];
-
-        setCustomers(mockCustomers);
-        setTotalPages(3);
+        setCustomers(response.data || []);
+        setTotalPages(response.pages || Math.ceil((response.total || response.count || 0) / 10));
       } catch (error) {
         console.error('Error fetching customers:', error);
+        setCustomers([]);
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }

@@ -14,65 +14,19 @@ const Orders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Mock data (replace with API call)
+  // Fetch orders from API
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        // const response = await orderService.getAllOrders({ page: currentPage, limit: 10 });
+        setLoading(true);
+        const response = await orderService.getAllOrders({ page: currentPage, limit: 10 });
         
-        // Mock data for demonstration
-        const mockOrders = [
-          {
-            _id: 'ORD001',
-            customer: { name: 'John Doe', phone: '9876543210' },
-            totalPrice: 1500,
-            deliveryType: 'Home Delivery',
-            paymentMethod: 'Online',
-            status: 'Delivered',
-            createdAt: '2026-03-08',
-          },
-          {
-            _id: 'ORD002',
-            customer: { name: 'Jane Smith', phone: '9876543211' },
-            totalPrice: 2300,
-            deliveryType: 'Express',
-            paymentMethod: 'COD',
-            status: 'Shipped',
-            createdAt: '2026-03-08',
-          },
-          {
-            _id: 'ORD003',
-            customer: { name: 'Mike Johnson', phone: '9876543212' },
-            totalPrice: 890,
-            deliveryType: 'Home Delivery',
-            paymentMethod: 'Online',
-            status: 'Pending',
-            createdAt: '2026-03-07',
-          },
-          {
-            _id: 'ORD004',
-            customer: { name: 'Sarah Williams', phone: '9876543213' },
-            totalPrice: 3200,
-            deliveryType: 'Store Pickup',
-            paymentMethod: 'Online',
-            status: 'Confirmed',
-            createdAt: '2026-03-07',
-          },
-          {
-            _id: 'ORD005',
-            customer: { name: 'David Brown', phone: '9876543214' },
-            totalPrice: 1750,
-            deliveryType: 'Home Delivery',
-            paymentMethod: 'COD',
-            status: 'Cancelled',
-            createdAt: '2026-03-06',
-          },
-        ];
-
-        setOrders(mockOrders);
-        setTotalPages(5);
+        setOrders(response.data || []);
+        setTotalPages(response.pages || Math.ceil((response.total || response.count || 0) / 10));
       } catch (error) {
         console.error('Error fetching orders:', error);
+        setOrders([]);
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }

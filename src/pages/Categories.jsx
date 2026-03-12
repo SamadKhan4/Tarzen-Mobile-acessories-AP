@@ -11,55 +11,15 @@ const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Mock data (replace with API call)
+  // Fetch categories from API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        // const response = await categoryService.getAllCategories();
-        
-        // Mock data for demonstration
-        const mockCategories = [
-          {
-            _id: '1',
-            name: 'Cases & Covers',
-            image: 'https://via.placeholder.com/100',
-            productCount: 45,
-          },
-          {
-            _id: '2',
-            name: 'Smartphones',
-            image: 'https://via.placeholder.com/100',
-            productCount: 12,
-          },
-          {
-            _id: '3',
-            name: 'Audio',
-            image: 'https://via.placeholder.com/100',
-            productCount: 28,
-          },
-          {
-            _id: '4',
-            name: 'Chargers',
-            image: 'https://via.placeholder.com/100',
-            productCount: 35,
-          },
-          {
-            _id: '5',
-            name: 'Screen Protectors',
-            image: 'https://via.placeholder.com/100',
-            productCount: 50,
-          },
-          {
-            _id: '6',
-            name: 'Cables',
-            image: 'https://via.placeholder.com/100',
-            productCount: 40,
-          },
-        ];
-
-        setCategories(mockCategories);
+        const response = await categoryService.getAllCategories();
+        setCategories(response.data || []);
       } catch (error) {
         console.error('Error fetching categories:', error);
+        setCategories([]);
       } finally {
         setLoading(false);
       }

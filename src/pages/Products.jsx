@@ -17,70 +17,24 @@ const Products = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
-  // Mock data (replace with API call)
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // const response = await productService.getAllProducts({
-        //   page: currentPage,
-        //   limit: 10,
-        //   search: searchTerm,
-        // });
+        setLoading(true);
+        const response = await productService.getAllProducts({
+          page: currentPage,
+          limit: 10,
+          search: searchTerm,
+        });
         
-        // Mock data for demonstration
-        const mockProducts = [
-          {
-            _id: '1',
-            name: 'iPhone 15 Pro Case',
-            category: { name: 'Cases & Covers' },
-            price: 1299,
-            stock: 45,
-            images: ['https://via.placeholder.com/100'],
-            status: 'Active',
-          },
-          {
-            _id: '2',
-            name: 'Samsung Galaxy S24 Ultra',
-            category: { name: 'Smartphones' },
-            price: 129999,
-            stock: 12,
-            images: ['https://via.placeholder.com/100'],
-            status: 'Active',
-          },
-          {
-            _id: '3',
-            name: 'AirPods Pro 2nd Gen',
-            category: { name: 'Audio' },
-            price: 24999,
-            stock: 0,
-            images: ['https://via.placeholder.com/100'],
-            status: 'OutOfStock',
-          },
-          {
-            _id: '4',
-            name: 'USB-C Fast Charger',
-            category: { name: 'Chargers' },
-            price: 1999,
-            stock: 8,
-            images: ['https://via.placeholder.com/100'],
-            status: 'LowStock',
-          },
-          {
-            _id: '5',
-            name: 'Tempered Glass iPhone 15',
-            category: { name: 'Screen Protectors' },
-            price: 499,
-            stock: 150,
-            images: ['https://via.placeholder.com/100'],
-            status: 'Active',
-          },
-        ];
-
-        setProducts(mockProducts);
-        setTotalProducts(mockProducts.length);
-        setTotalPages(Math.ceil(mockProducts.length / 10));
+        setProducts(response.data || []);
+        setTotalProducts(response.total || response.count || 0);
+        setTotalPages(response.pages || Math.ceil((response.total || response.count || 0) / 10));
       } catch (error) {
         console.error('Error fetching products:', error);
+        setProducts([]);
+        setTotalProducts(0);
+        setTotalPages(0);
       } finally {
         setLoading(false);
       }
