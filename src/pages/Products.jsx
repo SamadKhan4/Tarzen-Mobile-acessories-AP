@@ -66,6 +66,18 @@ const Products = () => {
     setDeleteModalOpen(false);
   };
 
+  // Close modal on Escape key press
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && deleteModalOpen) {
+        closeDeleteModal();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [deleteModalOpen]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
