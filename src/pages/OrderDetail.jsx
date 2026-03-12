@@ -15,46 +15,19 @@ const OrderDetail = () => {
   const [order, setOrder] = useState(null);
   const [statusData, setStatusData] = useState('');
 
-  // Mock data (replace with API call)
+  // Fetch order from API
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        // const response = await orderService.getOrderById(id);
+        setLoading(true);
+        const response = await orderService.getOrderById(id);
+        const orderData = response.data;
         
-        // Mock data for demonstration
-        const mockOrder = {
-          _id: id,
-          customer: {
-            name: 'John Doe',
-            phone: '9876543210',
-            email: 'john@example.com',
-            address: '123 Main Street, Apartment 4B',
-            city: 'Mumbai',
-            pincode: '400001',
-          },
-          products: [
-            {
-              product: { name: 'iPhone 15 Pro Case', images: ['https://via.placeholder.com/100'] },
-              quantity: 2,
-              price: 1299,
-            },
-            {
-              product: { name: 'Tempered Glass', images: ['https://via.placeholder.com/100'] },
-              quantity: 1,
-              price: 499,
-            },
-          ],
-          totalPrice: 3097,
-          deliveryType: 'Home Delivery',
-          paymentMethod: 'Online',
-          status: 'Delivered',
-          createdAt: '2026-03-08T10:30:00Z',
-        };
-
-        setOrder(mockOrder);
-        setStatusData(mockOrder.status);
+        setOrder(orderData);
+        setStatusData(orderData.orderStatus || orderData.status);
       } catch (error) {
         console.error('Error fetching order:', error);
+        alert('Failed to fetch order details');
       } finally {
         setLoading(false);
       }
@@ -68,12 +41,9 @@ const OrderDetail = () => {
     setUpdating(true);
 
     try {
-      // await orderService.updateOrderStatus(id, { status: statusData });
+      await orderService.updateOrderStatus(id, statusData);
       
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      setOrder({ ...order, status: statusData });
+      setOrder({ ...order, orderStatus: statusData });
       alert('Order status updated successfully!');
     } catch (error) {
       console.error('Error updating order status:', error);
@@ -86,12 +56,9 @@ const OrderDetail = () => {
   const handleCancelOrder = async () => {
     if (window.confirm('Are you sure you want to cancel this order?')) {
       try {
-        // await orderService.cancelOrder(id);
+        await orderService.cancelOrder(id);
         
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        
-        setOrder({ ...order, status: 'Cancelled' });
+        setOrder({ ...order, orderStatus: 'Cancelled' });
         alert('Order cancelled successfully!');
       } catch (error) {
         console.error('Error cancelling order:', error);
@@ -145,10 +112,10 @@ const OrderDetail = () => {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900">Order Status</h3>
-          <StatusBadge status={order.status} />
+          <StatusBadge status={order.orderStatus || order.status} />
         </div>
         
-        {order.status !== 'Cancelled' && order.status !== 'Delivered' && (
+        {(order.orderStatus || order.status) !== 'Cancelled' && (order.orderStatus || order.status) !== 'Delivered' && (
           <form onSubmit={handleStatusUpdate} className="mt-4">
             <div className="flex items-end gap-4">
               <div className="flex-1">
@@ -180,27 +147,27 @@ const OrderDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <p className="text-sm text-gray-600">Name</p>
-            <p className="font-medium text-gray-900">{order.customer.name}</p>
+            <p className="font-medium text-gray-900">{order.customerDetails?.name || 'N/A'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Phone</p>
-            <p className="font-medium text-gray-900">{order.customer.phone}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-600">Email</p>
-            <p className="font-medium text-gray-900">{order.customer.email}</p>
+            <p className="font-medium text-gray-900">{order.customerDetails?.phone || 'N/A'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Address</p>
-            <p className="font-medium text-gray-900">{order.customer.address}</p>
+            <p className="font-medium text-gray-900">
+              {order.customerDetails?.address
+                ? `${order.customerDetails.address}, ${order.customerDetails.city || ''} - ${order.customerDetails.pincode || ''}`
+                : 'N/A'}
+            </p>
           </div>
           <div>
             <p className="text-sm text-gray-600">City</p>
-            <p className="font-medium text-gray-900">{order.customer.city}</p>
+            <p className="font-medium text-gray-900">{order.customerDetails?.city || 'N/A'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Pincode</p>
-            <p className="font-medium text-gray-900">{order.customer.pincode}</p>
+            <p className="font-medium text-gray-900">{order.customerDetails?.pincode || 'N/A'}</p>
           </div>
         </div>
       </Card>
@@ -227,16 +194,16 @@ const OrderDetail = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {order.products.map((item, index) => (
+              {order.products?.map((item, index) => (
                 <tr key={index}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-4">
                       <img
-                        src={item.product.images?.[0] || 'https://via.placeholder.com/50'}
-                        alt={item.product.name}
+                        src={item.productId?.images?.[0] || item.product?.images?.[0] || 'https://via.placeholder.com/50'}
+                        alt={item.name || item.product?.name}
                         className="h-12 w-12 object-cover rounded-lg"
                       />
-                      <span className="font-medium text-gray-900">{item.product.name}</span>
+                      <span className="font-medium text-gray-900">{item.name || item.product?.name}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

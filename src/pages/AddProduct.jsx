@@ -81,11 +81,9 @@ const AddProduct = () => {
         productData.append('images', image);
       });
 
-      // await productService.createProduct(productData);
+      await productService.createProduct(productData);
       
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
+      alert('Product created successfully!');
       navigate('/products');
     } catch (error) {
       setErrors({

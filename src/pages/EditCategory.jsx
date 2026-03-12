@@ -20,21 +20,17 @@ const EditCategory = () => {
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        // const response = await categoryService.getCategoryById(id);
-        
-        // Mock data for demonstration
-        const mockCategory = {
-          _id: id,
-          name: 'Cases & Covers',
-          image: 'https://via.placeholder.com/100',
-        };
+        setLoading(true);
+        const response = await categoryService.getCategoryById(id);
+        const category = response.data;
 
         setFormData({
-          name: mockCategory.name,
-          image: mockCategory.image,
+          name: category.name,
+          image: category.image,
         });
       } catch (error) {
         console.error('Error fetching category:', error);
+        alert('Failed to fetch category details');
       } finally {
         setLoading(false);
       }
@@ -75,11 +71,9 @@ const EditCategory = () => {
         categoryData.append('image', formData.image);
       }
 
-      // await categoryService.updateCategory(id, categoryData);
+      await categoryService.updateCategory(id, categoryData);
       
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
+      alert('Category updated successfully!');
       navigate('/categories');
     } catch (error) {
       setErrors({

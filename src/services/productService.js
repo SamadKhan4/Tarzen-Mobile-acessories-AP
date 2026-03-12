@@ -3,12 +3,12 @@ import api from './api';
 export const productService = {
   getAllProducts: async (params = {}) => {
     const response = await api.get('/products', { params });
-    return response.data;
+    return response.data; // Returns { success, count, total, page, pages, data }
   },
 
   getProductById: async (id) => {
     const response = await api.get(`/products/${id}`);
-    return response.data;
+    return response.data; // Returns { success, data }
   },
 
   createProduct: async (productData) => {
@@ -17,7 +17,7 @@ export const productService = {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data;
+    return response.data; // Returns { success, message, data }
   },
 
   updateProduct: async (id, productData) => {
@@ -26,11 +26,11 @@ export const productService = {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data;
+    return response.data; // Returns { success, message, data }
   },
 
   deleteProduct: async (id) => {
     const response = await api.delete(`/products/${id}`);
-    return response.data;
+    return response.data; // Returns { success, message }
   },
 };

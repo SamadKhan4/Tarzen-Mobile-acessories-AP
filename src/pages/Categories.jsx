@@ -15,10 +15,12 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        setLoading(true);
         const response = await categoryService.getAllCategories();
         setCategories(response.data || []);
       } catch (error) {
         console.error('Error fetching categories:', error);
+        alert('Failed to fetch categories');
         setCategories([]);
       } finally {
         setLoading(false);
@@ -31,10 +33,12 @@ const Categories = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       try {
-        // await categoryService.deleteCategory(id);
+        await categoryService.deleteCategory(id);
         setCategories(categories.filter((c) => c._id !== id));
+        alert('Category deleted successfully!');
       } catch (error) {
         console.error('Error deleting category:', error);
+        alert('Failed to delete category');
       }
     }
   };
@@ -82,37 +86,53 @@ const Categories = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {categories.map((category) => (
-                <tr key={category._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <img
-                      src={category.image || 'https://via.placeholder.com/50'}
-                      alt={category.name}
-                      className="h-12 w-12 object-cover rounded-lg"
-                    />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{category.name}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-700">{category.productCount}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => navigate(`/categories/edit/${category._id}`)}
-                      className="text-blue-600 hover:text-blue-900 mr-3"
-                    >
-                      <Edit size={18} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(category._id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+              {categories.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="px-6 py-8 text-center">
+                    <div className="text-gray-400">
+                      <p className="text-lg">No categories found</p>
+                    </div>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                categories.map((category) => (
+                  <tr key={category._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {category.image ? (
+                        <img
+                          src={category.image}
+                          alt={category.name}
+                          className="h-12 w-12 object-cover rounded-lg"
+                        />
+                      ) : (
+                        <div className="h-12 w-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                          <span className="text-gray-400 text-xs">No img</span>
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{category.name}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-700">-</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button
+                        onClick={() => navigate(`/categories/edit/${category._id}`)}
+                        className="text-blue-600 hover:text-blue-900 mr-3"
+                      >
+                        <Edit size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(category._id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

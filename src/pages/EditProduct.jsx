@@ -28,31 +28,22 @@ const EditProduct = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        // const response = await productService.getProductById(id);
-        
-        // Mock data
-        const mockProduct = {
-          _id: id,
-          name: 'iPhone 15 Pro Case',
-          description: 'Premium quality protective case for iPhone 15 Pro',
-          price: 1299,
-          category: { _id: '1', name: 'Cases & Covers' },
-          stock: 45,
-          brand: 'Apple',
-          images: ['https://via.placeholder.com/100'],
-        };
-        
+        setLoading(true);
+        const response = await productService.getProductById(id);
+        const product = response.data;
+
         setFormData({
-          name: mockProduct.name,
-          description: mockProduct.description,
-          price: mockProduct.price.toString(),
-          category: mockProduct.category?._id,
-          stock: mockProduct.stock.toString(),
-          brand: mockProduct.brand,
-          images: mockProduct.images,
+          name: product.name || '',
+          description: product.description || '',
+          price: product.price?.toString() || '',
+          category: product.category?._id || '',
+          stock: product.stock?.toString() || '',
+          brand: product.brand || '',
+          images: product.images || [],
         });
       } catch (error) {
         console.error('Error fetching product:', error);
+        alert('Failed to fetch product details');
       } finally {
         setLoading(false);
       }
@@ -60,19 +51,11 @@ const EditProduct = () => {
 
     const fetchCategories = async () => {
       try {
-        // const response = await categoryService.getAllCategories();
-        // Mock data
-        const mockCategories = [
-          { _id: '1', name: 'Cases & Covers' },
-          { _id: '2', name: 'Smartphones' },
-          { _id: '3', name: 'Audio' },
-          { _id: '4', name: 'Chargers' },
-          { _id: '5', name: 'Screen Protectors' },
-          { _id: '6', name: 'Cables' },
-        ];
-        setCategories(mockCategories);
+        const response = await categoryService.getAllCategories();
+        setCategories(response.data || []);
       } catch (error) {
         console.error('Error fetching categories:', error);
+        setCategories([]);
       }
     };
 
@@ -120,11 +103,9 @@ const EditProduct = () => {
         }
       });
 
-      // await productService.updateProduct(id, productData);
+      await productService.updateProduct(id, productData);
       
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
+      alert('Product updated successfully!');
       navigate('/products');
     } catch (error) {
       setErrors({

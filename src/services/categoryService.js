@@ -3,12 +3,12 @@ import api from './api';
 export const categoryService = {
   getAllCategories: async () => {
     const response = await api.get('/categories');
-    return response.data;
+    return response.data; // Returns { success, count, data }
   },
 
   getCategoryById: async (id) => {
     const response = await api.get(`/categories/${id}`);
-    return response.data;
+    return response.data; // Returns { success, data }
   },
 
   createCategory: async (categoryData) => {
@@ -17,7 +17,7 @@ export const categoryService = {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data;
+    return response.data; // Returns { success, message, data }
   },
 
   updateCategory: async (id, categoryData) => {
@@ -26,11 +26,11 @@ export const categoryService = {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data;
+    return response.data; // Returns { success, message, data }
   },
 
   deleteCategory: async (id) => {
     const response = await api.delete(`/categories/${id}`);
-    return response.data;
+    return response.data; // Returns { success, message }
   },
 };

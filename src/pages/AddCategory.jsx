@@ -47,11 +47,9 @@ const AddCategory = () => {
         categoryData.append('image', formData.image);
       }
 
-      // await categoryService.createCategory(categoryData);
+      await categoryService.createCategory(categoryData);
       
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
+      alert('Category created successfully!');
       navigate('/categories');
     } catch (error) {
       setErrors({
