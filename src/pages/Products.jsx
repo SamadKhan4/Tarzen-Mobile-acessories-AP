@@ -135,11 +135,15 @@ const Products = () => {
                 products.map((product) => (
                   <tr key={product._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {product.images?.[0] ? (
+                      {product.images?.[0]?.url || product.images?.[0] ? (
                         <img
-                          src={product.images[0]}
+                          src={product.images[0].url || product.images[0]}
                           alt={product.name}
                           className="h-12 w-12 object-cover rounded-lg"
+                          onError={(e) => {
+                            console.error('Failed to load image:', product.images[0].url || product.images[0]);
+                            e.target.src = 'https://via.placeholder.com/50?text=No+Image';
+                          }}
                         />
                       ) : (
                         <div className="h-12 w-12 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -148,7 +152,12 @@ const Products = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{product.name || 'N/A'}</div>
+                      <button 
+                        onClick={() => navigate(`/products/${product._id}`)}
+                        className="text-left hover:text-blue-600 transition-colors"
+                      >
+                        <div className="text-sm font-medium text-gray-900">{product.name || 'N/A'}</div>
+                      </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-700">{product.category?.name || 'Uncategorized'}</div>

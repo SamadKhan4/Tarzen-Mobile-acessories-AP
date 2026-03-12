@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
 import AddProduct from './pages/AddProduct';
 import EditProduct from './pages/EditProduct';
+import ProductDetail from './pages/ProductDetail';
 import Categories from './pages/Categories';
 import AddCategory from './pages/AddCategory';
 import EditCategory from './pages/EditCategory';
@@ -40,6 +41,7 @@ function App() {
             <Route path="products" element={<Products />} />
             <Route path="products/add" element={<AddProduct />} />
             <Route path="products/edit/:id" element={<EditProduct />} />
+            <Route path="products/:id" element={<ProductDetail />} />
             
             {/* Categories Routes */}
             <Route path="categories" element={<Categories />} />

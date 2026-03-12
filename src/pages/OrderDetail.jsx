@@ -199,9 +199,12 @@ const OrderDetail = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-4">
                       <img
-                        src={item.productId?.images?.[0] || item.product?.images?.[0] || 'https://via.placeholder.com/50'}
+                        src={item.productId?.images?.[0]?.url || item.productId?.images?.[0] || item.product?.images?.[0]?.url || item.product?.images?.[0] || 'https://via.placeholder.com/50'}
                         alt={item.name || item.product?.name}
                         className="h-12 w-12 object-cover rounded-lg"
+                        onError={(e) => {
+                          e.target.src = 'https://via.placeholder.com/50?text=No+Image';
+                        }}
                       />
                       <span className="font-medium text-gray-900">{item.name || item.product?.name}</span>
                     </div>
