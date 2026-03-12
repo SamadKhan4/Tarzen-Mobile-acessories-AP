@@ -30,7 +30,6 @@ const EditCategory = () => {
         });
       } catch (error) {
         console.error('Error fetching category:', error);
-        alert('Failed to fetch category details');
       } finally {
         setLoading(false);
       }
@@ -73,7 +72,6 @@ const EditCategory = () => {
 
       await categoryService.updateCategory(id, categoryData);
       
-      alert('Category updated successfully!');
       navigate('/categories');
     } catch (error) {
       setErrors({

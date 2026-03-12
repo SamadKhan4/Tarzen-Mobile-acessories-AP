@@ -49,7 +49,6 @@ const AddCategory = () => {
 
       await categoryService.createCategory(categoryData);
       
-      alert('Category created successfully!');
       navigate('/categories');
     } catch (error) {
       setErrors({

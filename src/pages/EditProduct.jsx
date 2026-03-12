@@ -43,7 +43,6 @@ const EditProduct = () => {
         });
       } catch (error) {
         console.error('Error fetching product:', error);
-        alert('Failed to fetch product details');
       } finally {
         setLoading(false);
       }
@@ -105,7 +104,6 @@ const EditProduct = () => {
 
       await productService.updateProduct(id, productData);
       
-      alert('Product updated successfully!');
       navigate('/products');
     } catch (error) {
       setErrors({

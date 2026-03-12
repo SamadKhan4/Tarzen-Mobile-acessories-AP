@@ -25,7 +25,6 @@ const ProductDetail = () => {
         console.log('Product Images:', productData?.images);
       } catch (error) {
         console.error('Error fetching product:', error);
-        alert('Failed to fetch product details');
       } finally {
         setLoading(false);
       }
@@ -38,11 +37,9 @@ const ProductDetail = () => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         await productService.deleteProduct(id);
-        alert('Product deleted successfully!');
         navigate('/products');
       } catch (error) {
         console.error('Error deleting product:', error);
-        alert('Failed to delete product');
       }
     }
   };

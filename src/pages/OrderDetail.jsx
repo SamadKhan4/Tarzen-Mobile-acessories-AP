@@ -27,7 +27,6 @@ const OrderDetail = () => {
         setStatusData(orderData.orderStatus || orderData.status);
       } catch (error) {
         console.error('Error fetching order:', error);
-        alert('Failed to fetch order details');
       } finally {
         setLoading(false);
       }
@@ -44,10 +43,8 @@ const OrderDetail = () => {
       await orderService.updateOrderStatus(id, statusData);
       
       setOrder({ ...order, orderStatus: statusData });
-      alert('Order status updated successfully!');
     } catch (error) {
       console.error('Error updating order status:', error);
-      alert('Failed to update order status');
     } finally {
       setUpdating(false);
     }
@@ -59,10 +56,8 @@ const OrderDetail = () => {
         await orderService.cancelOrder(id);
         
         setOrder({ ...order, orderStatus: 'Cancelled' });
-        alert('Order cancelled successfully!');
       } catch (error) {
         console.error('Error cancelling order:', error);
-        alert('Failed to cancel order');
       }
     }
   };

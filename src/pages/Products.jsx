@@ -6,6 +6,7 @@ import Input from '../components/Input';
 import StatusBadge from '../components/StatusBadge';
 import Pagination from '../components/Pagination';
 import Card from '../components/Card';
+import Modal from '../components/Modal';
 import { productService } from '../services/productService';
 
 const Products = () => {
@@ -15,7 +16,8 @@ const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalProducts, setTotalProducts] = useState(0);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -28,12 +30,10 @@ const Products = () => {
         });
         
         setProducts(response.data || []);
-        setTotalProducts(response.total || response.count || 0);
         setTotalPages(response.pages || Math.ceil((response.total || response.count || 0) / 10));
       } catch (error) {
         console.error('Error fetching products:', error);
         setProducts([]);
-        setTotalProducts(0);
         setTotalPages(0);
       } finally {
         setLoading(false);
@@ -43,15 +43,27 @@ const Products = () => {
     fetchProducts();
   }, [currentPage, searchTerm]);
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      try {
-        // await productService.deleteProduct(id);
-        setProducts(products.filter((p) => p._id !== id));
-      } catch (error) {
-        console.error('Error deleting product:', error);
-      }
+  const handleDelete = async () => {
+    if (!productToDelete) return;
+    
+    try {
+      await productService.deleteProduct(productToDelete);
+      setProducts(products.filter((p) => p._id !== productToDelete));
+      setDeleteModalOpen(false);
+      setProductToDelete(null);
+    } catch (error) {
+      console.error('Error deleting product:', error);
     }
+  };
+
+  const openDeleteModal = (id) => {
+    setProductToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setProductToDelete(null);
+    setDeleteModalOpen(false);
   };
 
   if (loading) {
@@ -179,7 +191,7 @@ const Products = () => {
                         <Edit size={18} />
                       </button>
                       <button
-                        onClick={() => handleDelete(product._id)}
+                        onClick={() => openDeleteModal(product._id)}
                         className="text-red-600 hover:text-red-900"
                       >
                         <Trash2 size={18} />
@@ -199,6 +211,27 @@ const Products = () => {
           onPageChange={setCurrentPage}
         />
       </Card>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteModalOpen}
+        onClose={closeDeleteModal}
+        title="Delete Product"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-700">
+            Are you sure you want to delete this product? This action cannot be undone.
+          </p>
+          <div className="flex gap-3 justify-end">
+            <Button onClick={closeDeleteModal} variant="secondary">
+              Cancel
+            </Button>
+            <Button onClick={handleDelete} variant="danger">
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

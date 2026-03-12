@@ -20,7 +20,6 @@ const Customers = () => {
         setTotalPages(response.pages || Math.ceil((response.total || response.count || 0) / 10));
       } catch (error) {
         console.error('Error fetching customers:', error);
-        alert('Failed to fetch customers');
         setCustomers([]);
         setTotalPages(1);
       } finally {

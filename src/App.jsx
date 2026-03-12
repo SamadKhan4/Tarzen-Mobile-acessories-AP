@@ -11,6 +11,7 @@ import ProductDetail from './pages/ProductDetail';
 import Categories from './pages/Categories';
 import AddCategory from './pages/AddCategory';
 import EditCategory from './pages/EditCategory';
+import CategoryDetail from './pages/CategoryDetail';
 import Orders from './pages/Orders';
 import OrderDetail from './pages/OrderDetail';
 import Customers from './pages/Customers';
@@ -47,6 +48,7 @@ function App() {
             <Route path="categories" element={<Categories />} />
             <Route path="categories/add" element={<AddCategory />} />
             <Route path="categories/edit/:id" element={<EditCategory />} />
+            <Route path="categories/:id" element={<CategoryDetail />} />
             
             {/* Orders Routes */}
             <Route path="orders" element={<Orders />} />

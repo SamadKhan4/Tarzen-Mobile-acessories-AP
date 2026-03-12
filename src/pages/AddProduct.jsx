@@ -83,7 +83,6 @@ const AddProduct = () => {
 
       await productService.createProduct(productData);
       
-      alert('Product created successfully!');
       navigate('/products');
     } catch (error) {
       setErrors({

@@ -4,12 +4,15 @@ import { Plus, Edit, Trash2 } from 'lucide-react';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import StatusBadge from '../components/StatusBadge';
+import Modal from '../components/Modal';
 import { categoryService } from '../services/categoryService';
 
 const Categories = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   // Fetch categories from API
   useEffect(() => {
@@ -20,7 +23,6 @@ const Categories = () => {
         setCategories(response.data || []);
       } catch (error) {
         console.error('Error fetching categories:', error);
-        alert('Failed to fetch categories');
         setCategories([]);
       } finally {
         setLoading(false);
@@ -30,17 +32,27 @@ const Categories = () => {
     fetchCategories();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this category?')) {
-      try {
-        await categoryService.deleteCategory(id);
-        setCategories(categories.filter((c) => c._id !== id));
-        alert('Category deleted successfully!');
-      } catch (error) {
-        console.error('Error deleting category:', error);
-        alert('Failed to delete category');
-      }
+  const handleDelete = async () => {
+    if (!categoryToDelete) return;
+    
+    try {
+      await categoryService.deleteCategory(categoryToDelete);
+      setCategories(categories.filter((c) => c._id !== categoryToDelete));
+      setDeleteModalOpen(false);
+      setCategoryToDelete(null);
+    } catch (error) {
+      console.error('Error deleting category:', error);
     }
+  };
+
+  const openDeleteModal = (id) => {
+    setCategoryToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setCategoryToDelete(null);
+    setDeleteModalOpen(false);
   };
 
   if (loading) {
@@ -103,6 +115,10 @@ const Categories = () => {
                           src={category.image}
                           alt={category.name}
                           className="h-12 w-12 object-cover rounded-lg"
+                          onError={(e) => {
+                            console.error('Failed to load category image:', category.image);
+                            e.target.src = 'https://via.placeholder.com/50?text=No+Image';
+                          }}
                         />
                       ) : (
                         <div className="h-12 w-12 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -111,10 +127,20 @@ const Categories = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{category.name}</div>
+                      <button
+                        onClick={() => navigate(`/categories/${category._id}`)}
+                        className="text-left hover:text-blue-600 transition-colors"
+                      >
+                        <div className="text-sm font-medium text-gray-900">{category.name}</div>
+                      </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-700">-</div>
+                      <button
+                        onClick={() => navigate(`/categories/${category._id}`)}
+                        className="text-sm text-blue-600 hover:text-blue-900"
+                      >
+                        View Products →
+                      </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
@@ -124,7 +150,7 @@ const Categories = () => {
                         <Edit size={18} />
                       </button>
                       <button
-                        onClick={() => handleDelete(category._id)}
+                        onClick={() => openDeleteModal(category._id)}
                         className="text-red-600 hover:text-red-900"
                       >
                         <Trash2 size={18} />
@@ -137,6 +163,27 @@ const Categories = () => {
           </table>
         </div>
       </Card>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteModalOpen}
+        onClose={closeDeleteModal}
+        title="Delete Category"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-700">
+            Are you sure you want to delete this category? This action cannot be undone.
+          </p>
+          <div className="flex gap-3 justify-end">
+            <Button onClick={closeDeleteModal} variant="secondary">
+              Cancel
+            </Button>
+            <Button onClick={handleDelete} variant="danger">
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

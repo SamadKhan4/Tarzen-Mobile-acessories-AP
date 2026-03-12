@@ -25,7 +25,6 @@ const Orders = () => {
         setTotalPages(response.pages || Math.ceil((response.total || response.count || 0) / 10));
       } catch (error) {
         console.error('Error fetching orders:', error);
-        alert('Failed to fetch orders');
         setOrders([]);
         setTotalPages(1);
       } finally {
